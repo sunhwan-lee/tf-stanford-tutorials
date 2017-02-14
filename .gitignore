@@ -6,3 +6,9 @@
 data/*
 
 *.pyc
+
+assignments/graphs/*
+*.ipynb_checkpoints
+examples/processed/
+examples/checkpoints/
+examples/improved_graph/
