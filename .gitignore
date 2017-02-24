@@ -3,6 +3,7 @@
 
 *.SUNet
 
+<<<<<<< HEAD
 data/*
 
 *.pyc
@@ -13,3 +14,7 @@ assignments/graphs/*
 examples/processed/
 examples/checkpoints/
 examples/improved_graph/
+=======
+
+examples/checkpoints/*
+>>>>>>> 6f7d56ef4222da1e1103580b6f11312283f587dd
