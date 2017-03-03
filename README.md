@@ -15,13 +15,15 @@ Character-level language modeling <br>
 <br>
 ### In the folder "assignments":<br>
 Style Transfer<br>
+Chatbot using sequence to sequence with attention<br>
 <br>
 ## Misc<br>
 Examples on how to use data readers, TFRecord<br>
 Embedding visualization with TensorBoard<br>
 Usage of summary ops<br>
 Exercises to be familiar with other special TensorFlow ops<br>
-Demonstration of the danger of lazy loading
+Demonstration of the danger of lazy loading <br>
+Convolutional GRU (CRGU) (by Lukasz Kaiser)
 
 
 
