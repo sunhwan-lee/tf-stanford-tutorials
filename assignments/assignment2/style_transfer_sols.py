@@ -18,13 +18,16 @@ import vgg_model
 import utils
 
 # parameters to manage experiments
-STYLE = 'guernica'
+STYLE = 'starry_night'
 CONTENT = 'deadpool'
 STYLE_IMAGE = 'styles/' + STYLE + '.jpg'
 CONTENT_IMAGE = 'content/' + CONTENT + '.jpg'
 IMAGE_HEIGHT = 250
 IMAGE_WIDTH = 333
 NOISE_RATIO = 0.6 # percentage of weight of the noise for intermixing with the content image
+
+CONTENT_WEIGHT = 0.01
+STYLE_WEIGHT = 1
 
 # Layers used for style features. You can change this.
 STYLE_LAYERS = ['conv1_1', 'conv2_1', 'conv3_1', 'conv4_1', 'conv5_1']
@@ -33,7 +36,7 @@ W = [0.5, 1.0, 1.5, 3.0, 4.0] # give more weights to deeper layers.
 # Layer used for content features. You can change this.
 CONTENT_LAYER = 'conv4_2'
 
-ITERS = 300
+ITERS = 200
 LR = 2.0
 
 MEAN_PIXELS = np.array([123.68, 116.779, 103.939]).reshape((1,1,1,3))
@@ -146,6 +149,7 @@ def train(model, generated_image, initial_image):
         ## 2. create writer to write your graph
         saver = tf.train.Saver()
         sess.run(tf.global_variables_initializer())
+        writer = tf.summary.FileWriter('./graphs', sess.graph)
         ###############################
         sess.run(generated_image.assign(initial_image))
         ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/checkpoint'))

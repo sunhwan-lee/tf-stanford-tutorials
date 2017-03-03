@@ -18,7 +18,7 @@ import vgg_model
 import utils
 
 # parameters to manage experiments
-STYLE = 'guernica'
+STYLE = 'pattern'
 CONTENT = 'deadpool'
 STYLE_IMAGE = 'styles/' + STYLE + '.jpg'
 CONTENT_IMAGE = 'content/' + CONTENT + '.jpg'
@@ -36,7 +36,7 @@ CONTENT_LAYER = 'conv4_2'
 CONTENT_WEIGHT = 0.01
 STYLE_WEIGHT = 1
 
-ITERS = 300
+ITERS = 200
 LR = 2.0
 
 MEAN_PIXELS = np.array([123.68, 116.779, 103.939]).reshape((1,1,1,3))
@@ -66,7 +66,7 @@ def _create_content_loss(p, f):
 
     """
     s = reduce(lambda x, y: x*y, p.shape)
-    content_loss = 1/(4.0*s)*tf.reduce_sum(tf.square(f - p))
+    content_loss = tf.reduce_sum(tf.square(f - p))/(4.0*s)
 
     return content_loss
 
@@ -99,7 +99,7 @@ def _single_style_loss(a, g):
     A = _gram_matrix(a, N, M)
     G = _gram_matrix(g, N, M)
     
-    return 1/(4*N*N*M*M)*tf.reduce_sum(tf.square(G-A))
+    return tf.reduce_sum(tf.square(G-A))/(4*N*N*M*M)
 
 def _create_style_loss(A, model):
     """ Return the total style loss
