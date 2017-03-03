@@ -1,4 +1,4 @@
-
+a
 *.pdf
 
 *.SUNet
@@ -15,8 +15,8 @@ assignments/graphs/*
 examples/processed/
 examples/checkpoints/
 examples/improved_graph/
-assignments/assignment2/graphs/
-assignments/assignment2/checkpoints/
+assignments/assignment2/graphs/*
+assignments/assignment2/checkpoints/*
 =======
 
 examples/checkpoints/*

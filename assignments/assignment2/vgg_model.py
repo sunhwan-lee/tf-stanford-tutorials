@@ -41,12 +41,12 @@ def _conv2d_relu(vgg_layers, prev_layer, layer, layer_name):
     Hint for choosing strides size: 
         for small images, you probably don't want to skip any pixel
     """
-    W_mat, b_mat = _weights(vgg_layers, layer, layer_name)
-    kernel = tf.constant(W_mat)
-    biases = tf.constant(b_mat)
+    W, b = _weights(vgg_layers, layer, layer_name)
+    W = tf.constant(W)
+    b = tf.constant(b)
 
-    conv = tf.nn.conv2d(prev_layer, kernel, strides=[1, 1, 1, 1], padding='SAME')
-    conv1 = tf.nn.relu(conv + biases, name=layer_name)
+    conv = tf.nn.conv2d(prev_layer, W, strides=[1, 1, 1, 1], padding='SAME')
+    conv1 = tf.nn.relu(conv + b, name=layer_name)
 
     return conv1
 

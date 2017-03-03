@@ -33,6 +33,9 @@ W = [0.5, 1.0, 1.5, 3.0, 4.0] # give more weights to deeper layers.
 # Layer used for content features. You can change this.
 CONTENT_LAYER = 'conv4_2'
 
+CONTENT_WEIGHT = 0.01
+STYLE_WEIGHT = 1
+
 ITERS = 300
 LR = 2.0
 
@@ -63,7 +66,7 @@ def _create_content_loss(p, f):
 
     """
     s = reduce(lambda x, y: x*y, p.shape)
-    content_loss = 1/(4*s)*tf.reduce_sum(tf.square(f - p))
+    content_loss = 1/(4.0*s)*tf.reduce_sum(tf.square(f - p))
 
     return content_loss
 
@@ -74,7 +77,7 @@ def _gram_matrix(F, N, M):
     P = tf.reshape(F, [M, N])
     #U = tf.matmul(P, tf.transpose(P))
 
-    return tf.matmul(P, tf.transpose(P))
+    return tf.matmul(tf.transpose(P),P)
 
 def _single_style_loss(a, g):
     """ Calculate the style loss at a certain layer
@@ -103,7 +106,6 @@ def _create_style_loss(A, model):
     """
     n_layers = len(STYLE_LAYERS)
     E = [_single_style_loss(A[i], model[STYLE_LAYERS[i]]) for i in range(n_layers)]
-    
     ###############################
     ## TO DO: return total style loss
     return tf.reduce_sum([l[0]*l[1] for l in zip(W, E)])
@@ -124,9 +126,7 @@ def _create_losses(model, input_image, content_image, style_image):
         ##########################################
         ## TO DO: create total loss. 
         ## Hint: don't forget the content loss and style loss weights
-        alpha = 1.
-        beta = 50.
-        total_loss = alpha*content_loss + beta*style_loss
+        total_loss = CONTENT_WEIGHT*content_loss + STYLE_WEIGHT*style_loss
         
         ##########################################
 
@@ -160,10 +160,10 @@ def train(model, generated_image, initial_image):
         ## 1. initialize your variables
         sess.run(tf.global_variables_initializer())
         ## 2. create writer to write your graph
-        writer = tf.summary.FileWriter('./graphs', sess.graph)
+        writer = tf.summary.FileWriter('./graphs/' + STYLE + '/', sess.graph)
         ###############################
         sess.run(generated_image.assign(initial_image))
-        ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/checkpoint'))
+        ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/' + STYLE + '/checkpoint'))
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
         initial_step = model['global_step'].eval()
@@ -179,6 +179,7 @@ def train(model, generated_image, initial_image):
             if (index + 1) % skip_step == 0:
                 ###############################
                 ## TO DO: obtain generated image and loss
+                gen_image, total_loss, summary = sess.run([generated_image, model["total_loss"], model["summary_op"]])
 
                 ###############################
                 gen_image = gen_image + MEAN_PIXELS
@@ -188,11 +189,11 @@ def train(model, generated_image, initial_image):
                 print('   Time: {}'.format(time.time() - start_time))
                 start_time = time.time()
 
-                filename = 'outputs/%d.png' % (index)
+                filename = 'outputs/' + STYLE + '/%d.png' % (index)
                 utils.save_image(filename, gen_image)
 
                 if (index + 1) % 20 == 0:
-                    saver.save(sess, 'checkpoints/style_transfer', index)
+                    saver.save(sess, 'checkpoints/' + STYLE + '/style_transfer', index)
 
 def main():
     with tf.variable_scope('input') as scope:
@@ -213,10 +214,9 @@ def main():
                                                     input_image, content_image, style_image)
     ###############################
     ## TO DO: create optimizer
-    model['optimizer'] = tf.train.AdamOptimizer().minimize(model['total_loss'], global_step=model['global_step'])
+    model['optimizer'] = tf.train.AdamOptimizer(LR).minimize(model['total_loss'], global_step=model['global_step'])
     ###############################
     model['summary_op'] = _create_summary(model)
-    assert 1==0
 
     initial_image = utils.generate_noise_image(content_image, IMAGE_HEIGHT, IMAGE_WIDTH, NOISE_RATIO)
     train(model, input_image, initial_image)
