@@ -60,7 +60,7 @@ def _avgpool(prev_layer):
         the output of the tf.nn.avg_pool() function.
     Hint for choosing strides and kszie: choose what you feel appropriate
     """
-    pool = tf.nn.avg_pool(prev_layer, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
+    pool = tf.nn.avg_pool(prev_layer, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     return pool
 

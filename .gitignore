@@ -17,6 +17,7 @@ examples/checkpoints/
 examples/improved_graph/
 assignments/assignment2/graphs/*
 assignments/assignment2/checkpoints/*
+assignments/assignment2/outputs/*
 =======
 
 examples/checkpoints/*
