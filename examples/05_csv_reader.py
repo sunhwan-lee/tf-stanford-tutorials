@@ -70,7 +70,7 @@ def generate_batches(data_batch, label_batch):
         coord.join(threads)
 
 def main():
-    data_batch, label_batch = batch_generator([DATA_PATH])
+    data_batch, label_batch = batch_generator(["../data/heart.csv"])
     generate_batches(data_batch, label_batch)
 
 if __name__ == '__main__':
