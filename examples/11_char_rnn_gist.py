@@ -15,10 +15,10 @@ DATA_PATH = '../data/arvix_abstracts.txt'
 HIDDEN_SIZE = 200
 BATCH_SIZE = 64
 NUM_STEPS = 50
-SKIP_STEP = 40
+SKIP_STEP = 100
 TEMPRATURE = 0.7
 LR = 0.003
-LEN_GENERATED = 300
+LEN_GENERATED = 500
 
 def vocab_encode(text, vocab):
     return [vocab.index(x) + 1 for x in text if x in vocab]

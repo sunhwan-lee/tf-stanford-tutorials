@@ -10,6 +10,7 @@ data/*
 *.mat
 
 examples/my_graph/
+examples/graphs/
 assignments/graphs/*
 *.ipynb_checkpoints
 examples/processed/
