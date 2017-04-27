@@ -176,8 +176,12 @@ def token2id(data, mode):
 def prepare_raw_data():
     print('Preparing raw data into train set and test set ...')
     id2line = get_lines()
+    print(id2line["L1045"])
     convos = get_convos()
+    print(convos[:10])
     questions, answers = question_answers(id2line, convos)
+    print(questions[:10])
+    print(answers[:10])
     prepare_dataset(questions, answers)
 
 def process_data():

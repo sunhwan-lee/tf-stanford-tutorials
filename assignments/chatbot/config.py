@@ -16,7 +16,7 @@ See readme.md for instruction on how to run the starter code.
 """
 
 # parameters for processing the dataset
-DATA_PATH = '/Users/Chip/data/cornell movie-dialogs corpus'
+DATA_PATH = '/Users/sunhwan/Documents/personal/learning/tensorflow/cs20si/tf-stanford-tutorials/data/cornell movie-dialogs corpus'
 CONVO_FILE = 'movie_conversations.txt'
 LINE_FILE = 'movie_lines.txt'
 OUTPUT_FILE = 'output_convo.txt'
@@ -57,3 +57,11 @@ LR = 0.5
 MAX_GRAD_NORM = 5.0
 
 NUM_SAMPLES = 512
+ENC_VOCAB = 24415
+DEC_VOCAB = 24682
+ENC_VOCAB = 24415
+DEC_VOCAB = 24682
+ENC_VOCAB = 24415
+DEC_VOCAB = 24682
+ENC_VOCAB = 24499
+DEC_VOCAB = 24681
