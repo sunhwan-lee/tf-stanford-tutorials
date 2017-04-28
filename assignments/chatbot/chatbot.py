@@ -132,6 +132,8 @@ def _eval_test_set(sess, model, test_buckets):
 def train():
     """ Train the bot """
     test_buckets, data_buckets, train_buckets_scale = _get_buckets()
+    print("Example of encoder and decoder inputs:\n")
+    print(test_buckets[0][0], data_buckets[0][0])
     # in train mode, we need to create the backward path, so forwrad_only is False
     model = ChatBotModel(False, config.BATCH_SIZE)
     model.build_graph()

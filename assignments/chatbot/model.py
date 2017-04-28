@@ -53,20 +53,20 @@ class ChatBotModel(object):
             b = tf.get_variable('proj_b', [config.DEC_VOCAB])
             self.output_projection = (w, b)
 
-        def sampled_loss(inputs, labels):
+        def sampled_loss(labels, inputs):
             labels = tf.reshape(labels, [-1, 1])
-            return tf.nn.sampled_softmax_loss(tf.transpose(w), b, inputs, labels, 
+            return tf.nn.sampled_softmax_loss(tf.transpose(w), b, labels, inputs, 
                                               config.NUM_SAMPLES, config.DEC_VOCAB)
         self.softmax_loss_function = sampled_loss
 
-        single_cell = tf.nn.rnn_cell.GRUCell(config.HIDDEN_SIZE)
-        self.cell = tf.nn.rnn_cell.MultiRNNCell([single_cell] * config.NUM_LAYERS)
+        single_cell = tf.contrib.rnn.GRUCell(config.HIDDEN_SIZE)
+        self.cell = tf.contrib.rnn.MultiRNNCell([single_cell] * config.NUM_LAYERS)
 
     def _create_loss(self):
         print('Creating loss... \nIt might take a couple of minutes depending on how many buckets you have.')
         start = time.time()
         def _seq2seq_f(encoder_inputs, decoder_inputs, do_decode):
-            return tf.nn.seq2seq.embedding_attention_seq2seq(
+            return tf.contrib.legacy_seq2seq.embedding_attention_seq2seq(
                     encoder_inputs, decoder_inputs, self.cell,
                     num_encoder_symbols=config.ENC_VOCAB,
                     num_decoder_symbols=config.DEC_VOCAB,
@@ -75,7 +75,7 @@ class ChatBotModel(object):
                     feed_previous=do_decode)
 
         if self.fw_only:
-            self.outputs, self.losses = tf.nn.seq2seq.model_with_buckets(
+            self.outputs, self.losses = tf.contrib.legacy_seq2seq.model_with_buckets(
                                         self.encoder_inputs, 
                                         self.decoder_inputs, 
                                         self.targets,
@@ -90,7 +90,7 @@ class ChatBotModel(object):
                                             self.output_projection[0]) + self.output_projection[1]
                                             for output in self.outputs[bucket]]
         else:
-            self.outputs, self.losses = tf.nn.seq2seq.model_with_buckets(
+            self.outputs, self.losses = tf.contrib.legacy_seq2seq.model_with_buckets(
                                         self.encoder_inputs, 
                                         self.decoder_inputs, 
                                         self.targets,
@@ -100,7 +100,7 @@ class ChatBotModel(object):
                                         softmax_loss_function=self.softmax_loss_function)
         print('Time:', time.time() - start)
 
-    def _creat_optimizer(self):
+    def _create_optimizer(self):
         print('Create optimizer... \nIt might take a couple of minutes depending on how many buckets you have.')
         with tf.variable_scope('training') as scope:
             self.global_step = tf.Variable(0, dtype=tf.int32, trainable=False, name='global_step')
@@ -130,5 +130,5 @@ class ChatBotModel(object):
         self._create_placeholders()
         self._inference()
         self._create_loss()
-        self._creat_optimizer()
+        self._create_optimizer()
         self._create_summary()
