@@ -44,7 +44,7 @@ def read_batch(stream, batch_size=BATCH_SIZE):
     yield batch
 
 def create_rnn(seq, hidden_size=HIDDEN_SIZE):
-    cell = tf.nn.rnn_cell.GRUCell(hidden_size)
+    cell = tf.contrib.rnn.GRUCell(hidden_size)
     in_state = tf.placeholder_with_default(
             cell.zero_state(tf.shape(seq)[0], tf.float32), [None, hidden_size])
     # this line to calculate the real length of seq
@@ -59,7 +59,7 @@ def create_model(seq, temp, vocab, hidden=HIDDEN_SIZE):
     # fully_connected is syntactic sugar for tf.matmul(w, output) + b
     # it will create w and b for us
     logits = tf.contrib.layers.fully_connected(output, len(vocab), None)
-    loss = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(logits[:, :-1], seq[:, 1:]))
+    loss = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(labels=seq[:, 1:],logits=logits[:, :-1]))
     # sample the next character from Maxwell-Boltzmann Distribution with temperature temp
     # it works equally well without tf.exp
     sample = tf.multinomial(tf.exp(logits[:, -1] / temp), 1)[:, 0] 
