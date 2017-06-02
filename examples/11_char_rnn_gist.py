@@ -101,6 +101,22 @@ def online_inference(sess, vocab, seq, sample, temp, in_state, out_state, seed='
         sentence += vocab_decode(index, vocab)
     print(sentence)
 
+def generate_gist_from_ckpt(vocab, seq, temp, sample, in_state, out_state, seed="T"):
+    
+    saver = tf.train.Saver()
+    with tf.Session() as sess:
+        
+        sess.run(tf.global_variables_initializer())
+        
+        ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/arvix/checkpoint'))
+        if ckpt and ckpt.model_checkpoint_path:
+            saver.restore(sess, ckpt.model_checkpoint_path)
+
+        print("")
+        print("Gist generated from a trained RNN starting from " + seed)
+        print("="*80)
+        online_inference(sess, vocab, seq, sample, temp, in_state, out_state, seed)
+
 def main():
     vocab = (
             " $%'()+,-./0123456789:;=?ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -110,7 +126,8 @@ def main():
     loss, sample, in_state, out_state = create_model(seq, temp, vocab)
     global_step = tf.Variable(0, dtype=tf.int32, trainable=False, name='global_step')
     optimizer = tf.train.AdamOptimizer(LR).minimize(loss, global_step=global_step)
-    training(vocab, seq, loss, optimizer, global_step, temp, sample, in_state, out_state)
+    #training(vocab, seq, loss, optimizer, global_step, temp, sample, in_state, out_state)
+    generate_gist_from_ckpt(vocab, seq, temp, sample, in_state, out_state)
     
 if __name__ == '__main__':
     main()
